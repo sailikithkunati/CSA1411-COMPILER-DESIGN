@@ -1,0 +1,29 @@
+
+%{
+#include <stdio.h>
+%}
+
+%x COMMENT
+
+%%
+"//"[^\n]*              ;
+"/*"                    { BEGIN(COMMENT); }
+<COMMENT>"*/"           { BEGIN(INITIAL); }
+<COMMENT>\n             { ECHO; }
+<COMMENT>.              ;
+<COMMENT><<EOF>>        { return 0; }
+\n                      { ECHO; }
+.                       { ECHO; }
+%%
+
+int main()
+{
+    printf("Enter a C program:\n");
+    yylex();
+    return 0;
+}
+
+int yywrap()
+{
+    return 1;
+}
